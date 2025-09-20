@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Image Compressor</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-compress-alt"></i>
+                <span>ImageCompress</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Compress</a>
+                <a href="/about" class="nav-link active">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="container">
+            <div class="about-header">
+                <h1><i class="fas fa-info-circle"></i> About ImageCompress</h1>
+                <p>Fast, secure, and efficient image compression</p>
+            </div>
+
+            <div class="about-content">
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Secure</h3>
+                        <p>Your images are processed locally and automatically deleted after compression</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <h3>Fast</h3>
+                        <p>Quick compression using advanced algorithms while maintaining image quality</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <i class="fas fa-cogs"></i>
+                        <h3>Smart</h3>
+                        <p>Intelligent resizing that preserves aspect ratio and visual quality</p>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h2>How It Works</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Upload Image</h4>
+                                <p>Select your image file (PNG, JPG, JPEG, GIF, BMP, WebP)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Choose Reduction</h4>
+                                <p>Set your desired size reduction percentage (10-70%)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Download Result</h4>
+                                <p>Preview and download your compressed image</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-section">
+                    <h2>Technology</h2>
+                    <p>Built with Python Flask and PIL (Pillow) library, using LANCZOS resampling for high-quality image resizing. The compression maintains 95% JPEG quality while reducing file size through intelligent dimension scaling.</p>
+                </div>
+
+                <div class="cta-section">
+                    <a href="/" class="cta-button">
+                        <i class="fas fa-compress-arrows-alt"></i>
+                        Start Compressing
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

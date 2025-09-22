@@ -7,6 +7,16 @@
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .highlight {
+            animation: pulse 1s ease-in-out;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0px rgba(0, 255, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(0, 255, 0, 0.8); }
+            100% { box-shadow: 0 0 0px rgba(0, 255, 0, 0.5); }
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar">
@@ -66,7 +76,7 @@
             </div>
 
             {% if success %}
-            <div class="result-card">
+            <div class="result-card highlight" id="result-section">
                 <div class="result-header">
                     <i class="fas fa-check-circle success-icon"></i>
                     <h2>Compression Complete!</h2>
@@ -83,8 +93,8 @@
                     </div>
                     <div class="stat-item">
                         <div class="stat-label">Reduction</div>
-                        <div class="stat-value">{{ actual_reduction }}%</div>          
-                    </div>          
+                        <div class="stat-value">{{ actual_reduction }}%</div>
+                    </div>
                 </div>
                 
                 <div class="preview-section">
@@ -114,17 +124,26 @@
         const reductionValue = document.getElementById('reduction-value');
         const fileInput = document.getElementById('file');
         const fileLabel = document.querySelector('.file-label');
-        
+
         reductionSlider.addEventListener('input', function() {
             reductionValue.textContent = this.value;
         });
-        
+
         fileInput.addEventListener('change', function() {
             if (this.files.length > 0) {
                 fileLabel.textContent = this.files[0].name;
                 fileLabel.classList.add('file-selected');
             }
         });
+
+        {% if success %}
+        window.addEventListener('load', function() {
+            const resultSection = document.getElementById('result-section');
+            if (resultSection) {
+                resultSection.scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+        {% endif %}
     </script>
 </body>
 </html>

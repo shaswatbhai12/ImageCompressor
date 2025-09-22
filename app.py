@@ -7,24 +7,24 @@ app = Flask(__name__)
 app.secret_key = 'shaswat'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['COMPRESSED_FOLDER'] = 'compressed'
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-
-# Ensure folders exist (important for Render deployment)
-os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-os.makedirs(app.config['COMPRESSED_FOLDER'], exist_ok=True)
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'}
 
+# Check if file type is allowed
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# Cleanup old files in uploads/compressed folders
 def cleanup_old_files():
     for folder in [app.config['UPLOAD_FOLDER'], app.config['COMPRESSED_FOLDER']]:
+        os.makedirs(folder, exist_ok=True)
         for filename in os.listdir(folder):
             file_path = os.path.join(folder, filename)
             if os.path.isfile(file_path):
                 os.remove(file_path)
 
+# Compress image function
 def compress_image(input_path, output_path, reduction_percent):
     with Image.open(input_path) as img:
         reduction_factor = (100 - reduction_percent) / 100
@@ -38,8 +38,8 @@ def compress_image(input_path, output_path, reduction_percent):
         if img_resized.mode in ('RGBA', 'LA', 'P'):
             img_resized = img_resized.convert('RGB')
 
-        # Save as compressed JPEG
-        img_resized.save(output_path, 'JPEG', quality=95, optimize=True)
+        # Save compressed image as JPEG
+        img_resized.save(output_path, 'JPEG', quality=85, optimize=True)
 
 @app.route('/')
 def index():
@@ -60,19 +60,23 @@ def upload_file():
         return redirect(url_for('index'))
 
     if file and allowed_file(file.filename):
+        # Generate unique filename
         file_id = str(uuid.uuid4())
-        original_filename = file.filename
+        original_filename = file.filename 
         file_extension = original_filename.rsplit('.', 1)[1].lower()
-
+        
+        # Save original file
         original_path = os.path.join(app.config['UPLOAD_FOLDER'], f"{file_id}.{file_extension}")
         file.save(original_path)
 
+        # Compressed image
         compressed_filename = f"{file_id}_compressed.jpg"
         compressed_path = os.path.join(app.config['COMPRESSED_FOLDER'], compressed_filename)
 
         try:
             compress_image(original_path, compressed_path, input_reduction)
 
+            # Get file sizes
             original_size = os.path.getsize(original_path)
             compressed_size = os.path.getsize(compressed_path)
             actual_reduction = ((original_size - compressed_size) / original_size) * 100
@@ -83,13 +87,12 @@ def upload_file():
                                    compressed_filename=compressed_filename,
                                    original_size=round(original_size / 1024, 2),
                                    compressed_size=round(compressed_size / 1024, 2),
-                                   actual_reduction=round(actual_reduction, 1),
-                                   compressed_filename_display=compressed_filename)
+                                   actual_reduction=round(actual_reduction, 1))        
         except Exception as e:
             flash(f'Error compressing image: {str(e)}')
             return redirect(url_for('index'))
     else:
-        flash('Invalid file type. Please upload png, jpg, jpeg, gif, bmp, or webp files.')
+        flash('Invalid file type. Please upload png, jpg, jpeg, gif, bmp, or WebP files.')
         return redirect(url_for('index'))
 
 @app.route('/download/<filename>')
@@ -105,4 +108,6 @@ def about():
     return render_template('about.html')
 
 if __name__ == '__main__':
+    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+    os.makedirs(app.config['COMPRESSED_FOLDER'], exist_ok=True)
     app.run(debug=True)
